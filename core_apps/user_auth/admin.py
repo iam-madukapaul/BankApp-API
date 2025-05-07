@@ -86,14 +86,23 @@ class CustomUserAdmin(UserAdmin):
     )
     search_fields = ["email", "username", "first_name", "last_name"]
     ordering = ["email"]
-    # add_fieldsets = (
-    #     (None, {
-    #         'classes': ('wide',),
-    #         'fields': (
-    #             'email', 'id_no', 'first_name', 'middle_name', 'last_name',
-    #             'security_question', 'security_answer',
-    #             'password1', 'password2',
-    #             'is_staff', 'is_superuser',
-    #         ),
-    #     }),
-    # )
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": (
+                    "email",
+                    "id_no",
+                    "first_name",
+                    "last_name",
+                    "security_question",
+                    "security_answer",
+                    "password1",
+                    "password2",
+                    "is_staff",
+                    "is_superuser",
+                ),
+            },
+        ),
+    )
