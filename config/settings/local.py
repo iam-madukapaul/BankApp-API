@@ -16,7 +16,7 @@ DEBUG = getenv("DEBUG")
 
 SITE_NAME = getenv("SITE_NAME")
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "api"]
 
 ADMIN_URL = getenv("ADMIN_URL")
 
@@ -32,7 +32,7 @@ DOMAIN = getenv("DOMAIN")
 
 MAX_UPLOAD_SIZE = 1 * 1024 * 1024
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8000"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://localhost:8080"]
 
 LOCKOUT_DURATION = timedelta(minutes=1)
 
