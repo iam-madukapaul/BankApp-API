@@ -142,3 +142,121 @@ class Profile(TimeStampedModel):
         _("Phone Number"), max_length=30, default=settings.DEFAULT_PHONE_NUMBER
     )
     address = models.CharField(_("Address"), max_length=200, default="Unknown")
+    city = models.CharField(_("City"), max_length=50, default="Unknown")
+    country = CountryField(_("Country"), default=settings.DEFAULT_COUNTRY)
+    employment_status = models.CharField(
+        _("Employment Status"),
+        max_length=20,
+        choices=EmploymentStatus.choices,
+        default=EmploymentStatus.SELF_EMPLOYED,
+    )
+    employer_name = models.CharField(
+        _("Employer Name"),
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    annual_income = models.DecimalField(
+        _("Annual Income"),
+        max_digits=12,
+        decimal_places=2,
+        default=0.0,
+        help_text=_("Estimated annual income in your local currency."),
+    )
+    date_of_employment = models.DateField(
+        _("Date of Employment"),
+        blank=True,
+        null=True,
+    )
+    employer_address = models.CharField(
+        _("Employer Address"),
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    employer_city = models.CharField(
+        _("Employer City"),
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    employer_state = models.CharField(
+        _("Employer State"),
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    # account_currency = models.CharField(
+    #     _("Account Currency"),
+    #     max_length=20,
+    #     choices=BankAccount.AccountCurrency.choices,
+    #     null=True,
+    #     blank=True,
+    # )
+    # account_type = models.CharField(
+    #     _("Account Type"),
+    #     max_length=20,
+    #     choices=BankAccount.AccountType.choices,
+    #     null=True,
+    #     blank=True,
+    # )
+    photo = CloudinaryField(
+        _("Photo"),
+        blank=True,
+        null=True,
+    )
+    photo_url = models.URLField(_("Photo URL"), blank=True, null=True)
+
+    id_photo = CloudinaryField(
+        _("ID Photo"),
+        blank=True,
+        null=True,
+    )
+    id_photo_url = models.URLField(_("ID Photo URL"), blank=True, null=True)
+
+    signature_photo = CloudinaryField(
+        _("Signature Photo"),
+        blank=True,
+        null=True,
+    )
+    signature_photo_url = models.URLField(
+        _("Signature Photo URL"), blank=True, null=True
+    )
+
+    def clean(self) -> None:
+        super().clean()
+        if self.id_issue_date and self.id_expiry_date:
+            if self.id_expiry_date <= self.id_issue_date:
+                raise ValidationError(_("ID expiry date must come after issue date."))
+
+    def save(self, *args: Any, **kwargs: Any) -> None:
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    # Check if all required fields are filled in, and at least one next of kin exist b4 an acct is created
+    def is_complete_with_next_of_kin(self):
+        required_fields = [
+            self.title,
+            self.gender,
+            self.date_of_birth,
+            self.country_of_birth,
+            self.place_of_birth,
+            self.marital_status,
+            self.means_of_identification,
+            self.id_issue_date,
+            self.id_expiry_date,
+            self.nationality,
+            self.phone_number,
+            self.address,
+            self.city,
+            self.country,
+            self.employment_status,
+            self.photo,
+            self.id_photo,
+            self.signature_photo,
+        ]
+
+        return all(required_fields) and self.next_of_kin.exists()
+
+    def __str__(self) -> str:
+        return f"{self.title} {self.user.get_full_name()} Profile"
