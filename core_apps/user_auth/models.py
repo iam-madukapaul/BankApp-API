@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 from .emails import send_account_locked_email
 from .managers import UserManager
+from django.contrib.auth.hashers import make_password, check_password
 
 
 class User(AbstractUser):
@@ -65,7 +66,7 @@ class User(AbstractUser):
     )
     failed_login_attempt = models.PositiveSmallIntegerField(default=0)
     last_failed_login = models.DateTimeField(null=True, blank=True)
-    otp = models.CharField(_("OTP"), max_length=6, blank=True)
+    otp = models.CharField(_("OTP"), max_length=128, blank=True)
     otp_expiry_time = models.DateTimeField(_("OTP Expiry Time"), null=True, blank=True)
 
     objects = UserManager()
@@ -79,16 +80,17 @@ class User(AbstractUser):
     ]
 
     def set_otp(self, otp: str) -> None:
-        self.otp = otp
+        self.otp = make_password(otp)
         self.otp_expiry_time = timezone.now() + settings.OTP_EXPIRATION
         self.save()
 
     def verify_otp(self, otp: str) -> bool:
-        if self.otp == otp and self.otp_expiry_time > timezone.now():
-            self.otp = ""
-            self.otp_expiry_time = None
-            self.save()
-            return True
+        if self.otp and self.otp_expiry_time and self.otp_expiry_time > timezone.now():
+            if check_password(otp, self.otp):
+                self.otp = ""
+                self.otp_expiry_time = None
+                self.save()
+                return True
         return False
 
     def handle_failed_login_attempts(self) -> None:

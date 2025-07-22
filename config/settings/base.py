@@ -39,6 +39,7 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "djcelery_email",
     "django_celery_beat",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 LOCAL_APPS = [
@@ -183,6 +184,7 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
 }
