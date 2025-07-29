@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 from phonenumber_field.modelfields import PhoneNumberField
 from core_apps.common.models import TimeStampedModel
+from core_apps.accounts.models import BankAccount
 
 # Create your models here.
 User = get_user_model()
@@ -186,20 +187,20 @@ class Profile(TimeStampedModel):
         blank=True,
         null=True,
     )
-    # account_currency = models.CharField(
-    #     _("Account Currency"),
-    #     max_length=20,
-    #     choices=BankAccount.AccountCurrency.choices,
-    #     null=True,
-    #     blank=True,
-    # )
-    # account_type = models.CharField(
-    #     _("Account Type"),
-    #     max_length=20,
-    #     choices=BankAccount.AccountType.choices,
-    #     null=True,
-    #     blank=True,
-    # )
+    account_currency = models.CharField(
+        _("Account Currency"),
+        max_length=20,
+        choices=BankAccount.AccountCurrency.choices,
+        null=True,
+        blank=True,
+    )
+    account_type = models.CharField(
+        _("Account Type"),
+        max_length=20,
+        choices=BankAccount.AccountType.choices,
+        null=True,
+        blank=True,
+    )
     photo = CloudinaryField(
         _("Photo"),
         blank=True,

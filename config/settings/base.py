@@ -46,6 +46,7 @@ LOCAL_APPS = [
     "core_apps.common",
     "core_apps.user_auth",
     "core_apps.user_profile.apps.UserProfileConfig",
+    "core_apps.accounts.apps.AccountsConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
